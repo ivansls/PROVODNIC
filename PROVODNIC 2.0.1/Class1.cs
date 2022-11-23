@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Dynamic;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -9,67 +11,72 @@ namespace PROVODNIC_2._0._1
 {
     internal class Class1
     {
-        public static string put = "C:\\";
-        public static string dop_put = "C:\\";
-        public static List<string> dop_list = new List<string>();
+        public static string put = "";
+        //public static string dop_put = "";
+        public static int columns = 0;
+        //public static List<string> dop_list = new List<string>();
         public static List<string> list = new List<string>();
-        public static List<int> num = new List<int>();
-        public static int coun = -1;
+        //public static List<int> num = new List<int>();
+        public static int coun = 0;
         public static void show()
         {
             //List<string> list = new List<string>();
-            int columns = 0;
-            str ppp = new str();
-            Class1 cllass = new Class1();
-            int windows = 0;
             List<string> i = new List<string>();
+            string[] Drives = new string[] {};
+            string[] Failel = new string[] { };
             //int windows = 0;
-            string[] Drives = Directory.GetDirectories(Class1.put);  //Environment.GetLogicalDrives();
-            string[] Failel = Directory.GetFiles(Class1.put);
-            /*foreach (string file in Drives)
+            if (Class1.put != "")
             {
-                Console.WriteLine("  " + file);
-                list.Add(file);
-                num.Add(columns++);
-            }*/
+                Drives = Directory.GetDirectories(Class1.put);  //Environment.GetLogicalDrives();
+                Failel = Directory.GetFiles(Class1.put);
+                foreach (string n in Drives)
+                {
+                    i.Add(n);
+                }
+                foreach (string j in Failel)
+                {
+                    i.Add(j);
+                }
+                foreach (string file in i)
+                {
+                    Console.WriteLine("  " + file + "  " + File.GetCreationTime(file));
+                    list.Add(file);
+                    if (Class1.coun == 0)
+                    {
+                        Class1.columns++;
+                    }
+                }
+            }
+            else if (Class1.put == "")
+            {
+                Drives = Environment.GetLogicalDrives();
+                foreach (string n in Drives)
+                {
+                    list.Add(n);
+                }
+                foreach (var file in DriveInfo.GetDrives())
+                {
+                    try
+                    {
+                        Console.WriteLine("  "+ file.Name + "  " + (file.TotalSize / 1073741824) + " Гб");
+                        //list.Add(file);
+                    }
+                    catch { }
+                    if (Class1.coun != 0)
+                    {
+                        Class1.columns++;
+                    }
+                }
+            }
 
-            foreach (string n in Drives)
+            /*foreach (string n in Drives)
             {
                 i.Add(n);
             } 
             foreach (string j in Failel)
             {
                 i.Add(j);
-            }
-
-            foreach (string file in i)
-            {
-                Console.WriteLine("  " + file);
-                list.Add(file);
-                num.Add(columns++);
-            }
-
-            /*foreach (string file1 in list)
-            {
-                //var indexOfIntegerValue = list.IndexOf(file1);
-                Console.WriteLine("  " + file1);
             }*/
-            /*if (key.Key == ConsoleKey.Enter)
-            {
-                cllass.put = "D:\\";
-            }
-*/
-            /*else if (windows == 1 & ppp.posicion == indexOfIntegerValue & key.Key == ConsoleKey.Enter)
-            {
-                Console.Clear();
-                //if (ppp.posicion == indexOfIntegerValue & key.Key == ConsoleKey.Enter)
-
-                Console.WriteLine("asd");
-
-            }*//*
-        }*/
-            //Console.WriteLine("  " + list + "\n");
-
         }
     }
 
@@ -85,56 +92,73 @@ namespace PROVODNIC_2._0._1
             if (key.Key == ConsoleKey.UpArrow & posicion != 0)
             {
                 posicion--;
-
+                Class1.coun = 1;
+                //Console.WriteLine(" ");
             }
-            else if (key.Key == ConsoleKey.DownArrow)
+            else if (key.Key == ConsoleKey.DownArrow & posicion < (Class1.columns - 1))
             {
                 posicion++;
+                Class1.coun = 1;
+                //Console.WriteLine(" ");
             }
             else if (key.Key == ConsoleKey.Enter)
             {
-                int index = Class1.list[posicion].IndexOf(".") + 1;
-                string piece = Class1.list[posicion].Substring(index);
-                //var indexOfIntegerValue = Class1.list.IndexOf(Class1.list[posicion]);
-                //Console.Clear();
-                if (piece == Class1.list[posicion])
+                if (Path.GetExtension(Class1.list[posicion]) == "")
                 {
                     Class1.put = Class1.list[posicion];
-                    Class1.dop_list.Add(Class1.put);
+                    //Class1.dop_list.Add(Class1.put);
+                    posicion = 0;
+                    Class1.coun = 0;
+                    Class1.columns = 0;
+                    
                 }
-                else if (piece != "")
+                else if (Path.GetExtension(Class1.list[posicion]) != "")
                 {
                     Process.Start(new ProcessStartInfo { FileName = Class1.list[posicion], UseShellExecute = true });
 
                 }
-                //Console.WriteLine(Class1.list[posicion]);
-                /*else if (piece != "")
-                {
-                    Process.Start(new ProcessStartInfo { FileName = Class1.put, UseShellExecute = true });
-                }*/
                 Class1.list.Clear();
             }
             else if (key.Key == ConsoleKey.F1)
             {
-                Class1.put = Class1.dop_put;
+                posicion = 0;
+                Class1.coun = 1;
+                Class1.put = "";
                 Class1.list.Clear();
+            }
+            else if (key.Key == ConsoleKey.Delete)
+            {
+                try
+                {
+                    File.Delete(Class1.list[posicion]);
+                }
+                catch { }
+                Directory.Delete(Class1.list[posicion], true);
+            }
+            else if (key.Key == ConsoleKey.F5)
+            {
+                Console.SetCursorPosition(2, Class1.columns);
+                Console.WriteLine("Введите название директории");
+                Console.SetCursorPosition(2, Class1.columns + 1);
+                string dirn = Console.ReadLine();
+                Directory.CreateDirectory(Class1.put + "\\" + dirn);
+            }
+            else if (key.Key == ConsoleKey.F6)
+            {
+                Console.SetCursorPosition(2, Class1.columns);
+                Console.WriteLine("Введите название файла");
+                Console.SetCursorPosition(2, Class1.columns + 1);
+                string dirn = Console.ReadLine();
+                Console.SetCursorPosition(2, Class1.columns + 2);
+                Console.WriteLine("Введите расширение файла");
+                Console.SetCursorPosition(2, Class1.columns + 3);
+                string rash = Console.ReadLine();
+                File.Create(Class1.put + "\\" + dirn + "." + rash);
             }
             else if (key.Key == ConsoleKey.Escape)
             {
                 isListenning = false;
             }
-            int c = 0;
-            void Clear()
-            {
-                foreach (var item in Class1.num)
-                {
-                    Console.SetCursorPosition(0, c);
-                    Console.WriteLine("                                                                                     ");
-                    c++;
-                }
-            }
-
-            //Clear();
             Console.Clear();
         }
 
