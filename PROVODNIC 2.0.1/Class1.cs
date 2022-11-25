@@ -39,7 +39,7 @@ namespace PROVODNIC_2._0._1
                 }
                 foreach (string file in i)
                 {
-                    Console.WriteLine("  " + file + "  " + File.GetCreationTime(file));
+                    Console.WriteLine("  " + file + "  Дата и время создания - " + File.GetCreationTime(file));
                     list.Add(file);
                     if (Class1.coun == 0)
                     {
@@ -134,17 +134,25 @@ namespace PROVODNIC_2._0._1
                 }
                 catch { }
                 Directory.Delete(Class1.list[posicion], true);
+               
             }
             else if (key.Key == ConsoleKey.F5)
             {
+                Class1.coun = 0;
+                //Class1.columns = 0;
                 Console.SetCursorPosition(2, Class1.columns);
                 Console.WriteLine("Введите название директории");
                 Console.SetCursorPosition(2, Class1.columns + 1);
                 string dirn = Console.ReadLine();
+                Class1.list.Clear();
                 Directory.CreateDirectory(Class1.put + "\\" + dirn);
+                Class1.columns = 0;
+
             }
             else if (key.Key == ConsoleKey.F6)
             {
+                Class1.coun = 0;
+                //Class1.columns = 0;
                 Console.SetCursorPosition(2, Class1.columns);
                 Console.WriteLine("Введите название файла");
                 Console.SetCursorPosition(2, Class1.columns + 1);
@@ -153,7 +161,9 @@ namespace PROVODNIC_2._0._1
                 Console.WriteLine("Введите расширение файла");
                 Console.SetCursorPosition(2, Class1.columns + 3);
                 string rash = Console.ReadLine();
-                File.Create(Class1.put + "\\" + dirn + "." + rash);
+                Class1.list.Clear();
+                File.Create(Class1.put + "\\" + dirn + "." + rash).Close(); 
+                Class1.columns = 0;
             }
             else if (key.Key == ConsoleKey.Escape)
             {

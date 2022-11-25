@@ -3,9 +3,3 @@
 str s = new str();
 
 s.star();
-
-/*string[] Drives = Environment.GetLogicalDrives();
-foreach (string s in Drives)
-{
-    Console.WriteLine(s);
-}*/
